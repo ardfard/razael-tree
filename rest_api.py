@@ -1,5 +1,5 @@
 from app.api import ebooks
-from app import app
+from app import app,db
 
-app.register_blueprint(ebooks.bp)
-app.run(debug = True)
+if __name__ == '__main__':
+    app.run(debug = True)

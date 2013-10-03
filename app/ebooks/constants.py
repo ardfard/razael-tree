@@ -1,7 +1,8 @@
-PDF,EPUB,DJVU = range(3)
+PDF,EPUB,DJVU,TXT = range(4)
 EBOOK_FORMAT = {
-  PDF : 'pdf',
-  EPUB : 'epub',
-  DJVU : 'djvu
+  '.pdf':PDF,
+  '.epub':EPUB,
+  '.djvu':DJVU,
+  '.txt':TXT
 }
-  
+

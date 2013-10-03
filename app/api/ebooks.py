@@ -1,21 +1,21 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 
-from ..services import ebooks, category
+from ..ebooks.models import Ebook, Category
 
 bp = Blueprint('ebooks', __name__, url_prefix='/ebooks')
 
 @bp.route('/')
 def list():
     """Returns a list of ebook instances."""
-    return ebooks.all()
+    return jsonify(ebook_list=[e.serialize() for e in Ebook.query.all()])
 
- @bp.route('/<ebook_id>')
- def show(ebook_id):
+@bp.route('/id/<ebook_id>')
+def show(ebook_id):
  	"""return a product instance"""
- 	return ebooks.get_or_404(ebook_id)
+ 	return jsonify(Ebook.query.get(ebook_id).serialize())
 
-@bp.route('/<category>')
-def show_category(category):
+@bp.route('/category/<category_name>')
+def show_category(category_name):
 	"""return all product in given category"""
-	return category.find(name=category)[0]
+	return Category.query.filter_by(name=category_name).first()
 
