@@ -123,3 +123,11 @@ class Service(object):
         self._isinstance(model)
         db.session.delete(model)
         db.session.commit()
+
+    def search(self, search_string):
+        """Search model for the specified search_string in the indexed
+           fields using whoosh
+
+        :param search_string: string for the query
+        """
+        return self.__model__.query.whoosh_search(search_string).all()

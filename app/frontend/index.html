@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html class="full" lang="en"><!-- The full page image background will only work if the html has the custom class set to it! Don't delete it! -->
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Full Page Image Background Template for Bootstrap 3</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom CSS for the 'Full' Template -->
+    <link href="css/full.css" rel="stylesheet">
+    <style media="screen" type="text/css">
+      .container {
+        max-width: 732px;
+      }
+      #search {
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Razael Tree</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="#about">About</a></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container -->
+    </nav>
+
+    <!-- Content goes here -->
+    <div class="container">
+      <div class="row" id="search">
+        <div class="col-md-6 col-md-offset-3">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="search" name="srch-term" id="srch-term" data-bind="value: search_string">
+            <div class="input-group-btn">
+              <button class="btn btn-default" type="submit" data-bind="click: start_search"><i class="glyphicon glyphicon-search"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <center><img id="wait_indicator" src="img/wait.gif" style="display: none" /></center>
+        <table class="table table-stripped table-hover">
+            <tbody data-bind="foreach: ebooks, visible: ebooks().length">
+                <tr>
+                    <td>
+                      <a data-bind="attr: {href : path_uri}"><b data-bind="text: title"></b></a>
+                      <p>
+                        <span data-bind="text: authors"></span>
+                        <span data-bind="text: edition"></span>
+                        <span data-bind="text: year"></span>
+                        <br>Category: <span data-bind="text: categories"></span></br>
+                      </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+      <!-- javascript -->
+  <script src="js/jquery.js"></script>
+  <script src="js/bootstrap.js"></script>
+  <script src="js/knockout.js"></script>
+  <script type="text/javascript">
+    function Ebook(title, authors, edition, year, uri){
+        self = this;
+        self.title = title;
+        self.authors = authors;
+        self.edition = edition;
+        self.year = year;
+        self.uri = uri;
+    }
+    function RazaelTreeViewModel() {
+        var self = this;
+        self.search_string = ko.observable();
+        self.ebooks = ko.observableArray([]);
+        self.uri = "/ebooks/search"
+        self.start_search = function(){
+            $("#wait_indicator").show()
+            $.ajax(self.uri,
+                {
+                    data: "search_string="+self.search_string(),
+                    type: "post", ContentType: "application/json"
+                }
+            )
+            .done(function(data){
+                var ebooks = $.map(data.search_result, function(item){
+                   return item;
+                })
+                self.ebooks(ebooks);
+             })
+            .always(function(data){
+                $("#wait_indicator").hide();
+            });
+        };
+    }
+    ko.applyBindings(new RazaelTreeViewModel());
+  </script>
+  </body>
+
+</html>
